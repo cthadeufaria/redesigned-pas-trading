@@ -1,7 +1,7 @@
 """Control api connections and information gathering."""
 import os
 import requests
-from constants.constants import endpoints
+from constants.endpoints import endpoints
 
 class Binance:
     """Class to connect with Binance."""
@@ -37,5 +37,16 @@ class Binance:
         except:
             print('Could not ping API.')
 
-    def get_history(self):
-        pass
+    def get_tickers(self, market: str) -> list[str]:
+        r1 = requests.get(endpoints['exchange_info'], auth=(self.auth_dict['key'], self.auth_dict['skey']))
+        tickers: list
+        tickers = []
+        for i in range(0, len(r1.json()['symbols'])):
+            if r1.json()['symbols'][1]['status'] == 'TRADING':
+                if r1.json()['symbols'][i]['quoteAsset'] == market:
+                    tickers.append(r1.json()['symbols'][i]['symbol'])
+                elif market == None:
+                    tickers.append(r1.json()['symbols'][i]['symbol'])
+        print(tickers)
+
+        return tickers
