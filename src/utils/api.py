@@ -2,10 +2,12 @@
 import os
 import requests
 from constants.endpoints import endpoints
+from typing import Tuple, Optional
 
 class Binance:
     """Class to connect with Binance."""
     def __init__(self, api_type: str = 'prod', endpoints = endpoints):
+        self.auth: Tuple[Optional[str], Optional[str]]
         self.endpoints = endpoints
 
         if api_type == 'test':
@@ -21,6 +23,8 @@ class Binance:
                 'key' : os.environ.get('SPOT_KEY'),
                 'skey' : os.environ.get('SPOT_SKEY'),
             }
+        
+        self.auth = (self.auth_dict['key'], self.auth_dict['skey'])
 
         # Complete endpoints strings.
         for i in self.endpoints:
@@ -38,7 +42,7 @@ class Binance:
             print('Could not ping API.')
 
     def get_tickers(self, market: str) -> list[str]:
-        r1 = requests.get(endpoints['exchange_info'], auth=(self.auth_dict['key'], self.auth_dict['skey']))
+        r1 = requests.get(endpoints['exchange_info'], auth = self.auth)
         tickers: list
         tickers = []
         for i in range(0, len(r1.json()['symbols'])):
