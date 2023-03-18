@@ -25,8 +25,8 @@ uk_prev = 0
 e_prev = 0
 
 def controller(ts, vpk, vref, uk_prev, e_prev, pk, mk):
-    kp = 0.01
-    ti = 0.01
+    kp = 0.8
+    ti = 5
     e = vref - vpk
     uk = uk_prev + kp*(e - e_prev) + (kp/ti)*ts*e
     alfa = np.sign(uk)
